@@ -1,8 +1,15 @@
 import { signIn } from "@/auth";
 import Link from "next/link";
 import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+
   async function login(formData: FormData) {
     "use server";
     try {
@@ -13,7 +20,7 @@ export default function LoginPage() {
       });
     } catch (error: unknown) {
       if (error instanceof AuthError) {
-        return;
+        redirect("/login?error=credentials");
       }
       throw error;
     }
@@ -31,6 +38,11 @@ export default function LoginPage() {
           <label htmlFor="password" className="mb-1 block text-sm font-medium">Contraseña</label>
           <input id="password" name="password" type="password" autoComplete="current-password" required className="w-full rounded-lg border border-slate-300 px-3 py-2" />
         </div>
+        {error === "credentials" ? (
+          <p role="alert" className="text-sm font-medium text-red-700">
+            Email o contraseña incorrectos. Si todavía no tenés cuenta, registrate primero.
+          </p>
+        ) : null}
         <button type="submit" className="w-full rounded-lg bg-brand px-4 py-3 font-semibold text-white">Ingresar</button>
       </form>
       <p className="mt-5 text-sm text-slate-600">¿No tenés cuenta? <Link href="/registro">Registrate</Link>.</p>
