@@ -38,4 +38,14 @@ erDiagram
   }
   USER ||--o{ PAYMENT : makes
   COURSE ||--o{ PAYMENT : receives
+
+  PAYMENT_SETTINGS {
+    string id PK
+    string institution
+    string accountHolder
+    string accountIdentifier
+    string alias
+    string taxId
+    string instructions
+  }
 ```

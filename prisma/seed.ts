@@ -15,7 +15,7 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail.toLowerCase() },
-    update: { role: Role.ADMIN },
+    update: { role: Role.ADMIN, passwordHash },
     create: {
       name: "Profesora",
       email: adminEmail.toLowerCase(),

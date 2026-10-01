@@ -3,7 +3,7 @@
 ## Estado por fases
 
 - [x] FASE 1: Landing, registro/login, usuarios, catálogo, curso, panel alumno, panel profesora
-- [ ] FASE 2: pagos manuales, inscripciones y control de acceso (pasarela pendiente de definición)
+- [ ] FASE 2 (en curso): pagos manuales, inscripciones y control de acceso (pasarela pendiente de definición)
 - [ ] FASE 3: Videos, PDFs, módulos, progreso, evaluaciones
 - [ ] FASE 4: Certificados, QR, verificación pública
 - [ ] FASE 5: n8n, emails, WhatsApp, recordatorios, reportes, estadísticas
@@ -28,8 +28,9 @@
 - [x] Activar `Payment.APPROVED` y `Enrollment.ACTIVE` en una transacción idempotente.
 - [x] Añadir control de acceso a cursos por `Enrollment.ACTIVE`/`COMPLETED` y rol ADMIN.
 - [x] Añadir pruebas unitarias de acceso permitido y acceso indebido.
+- [x] Permitir al ADMIN configurar los datos de cobro y mostrarlos en el checkout del curso.
 - [ ] Definir pasarela de pago para automatizar cobros y webhooks.
-- [ ] Ejecutar Vitest, typecheck y build cuando Node/npm estén disponibles.
+- [ ] Completar pruebas de compra manual, `npm run build` y revisión responsive/accesibilidad.
 
 ## Regla de avance
 

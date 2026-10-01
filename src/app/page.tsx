@@ -1,6 +1,13 @@
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const courses = await prisma.course.findMany({
+    where: { status: "PUBLISHED" },
+    select: { id: true, title: true, summary: true, priceArs: true },
+    orderBy: { createdAt: "desc" }
+  });
+
   return (
     <main className="min-h-screen">
       <header className="border-b border-slate-200 bg-white">
@@ -43,6 +50,30 @@ export default function HomePage() {
           <p className="mt-3 max-w-sm text-2xl font-semibold leading-snug text-ink">
             Cursos, progreso y acceso a tus contenidos.
           </p>
+        </div>
+      </section>
+
+      <section className="border-t border-slate-200 bg-white" aria-labelledby="courses-heading">
+        <div className="mx-auto max-w-6xl px-4 py-12">
+          <h2 id="courses-heading" className="text-2xl font-bold">Cursos y capacitaciones</h2>
+          {courses.length === 0 ? (
+            <p className="mt-4 text-slate-600">Próximamente habrá cursos disponibles.</p>
+          ) : (
+            <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {courses.map((course) => (
+                <article key={course.id} className="flex flex-col border-t-2 border-brand py-4">
+                  <h3 className="text-lg font-bold">{course.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">{course.summary}</p>
+                  <p className="mt-4 font-semibold">
+                    {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(course.priceArs)}
+                  </p>
+                  <Link href={`/cursos/${course.id}/pagar`} className="mt-4 inline-flex w-fit rounded-md bg-brand px-4 py-2 font-semibold text-white">
+                    Ver pago e inscribirme
+                  </Link>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>

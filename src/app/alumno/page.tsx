@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { LogoutButton } from "@/components/logout-button";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function StudentDashboardPage() {
@@ -19,6 +20,11 @@ export default async function StudentDashboardPage() {
         <div>
           <h1 className="text-3xl font-bold">Mi campus</h1>
           <p className="mt-1 text-slate-600">Hola, {session.user.name ?? "alumno"}.</p>
+          {session.user.role === "ADMIN" ? (
+            <Link href="/admin/pagos" className="mt-3 inline-block text-sm font-semibold text-brand">
+              Configurar datos de cobro
+            </Link>
+          ) : null}
         </div>
         <LogoutButton />
       </div>

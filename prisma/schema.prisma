@@ -109,3 +109,14 @@ model Payment {
   @@index([userId, status])
   @@index([courseId, status])
 }
+
+model PaymentSettings {
+  id                String   @id @default("default")
+  institution       String?  @db.VarChar(120)
+  accountHolder     String?  @db.VarChar(120)
+  accountIdentifier String?  @db.VarChar(140)
+  alias             String?  @db.VarChar(100)
+  taxId             String?  @db.VarChar(40)
+  instructions      String?  @db.Text
+  updatedAt         DateTime @updatedAt
+}
