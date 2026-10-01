@@ -36,7 +36,7 @@ export default async function LoginPage({
   }
 
   return (
-    <section className="mx-auto max-w-md px-4 py-12">
+    <main className="mx-auto min-h-screen max-w-md px-4 py-12">
       <h1 className="text-3xl font-bold">Ingresar</h1>
       <form action={login} className="mt-6 space-y-5 rounded-xl border border-slate-200 bg-white p-6">
         <input type="hidden" name="returnTo" value={returnTo} />
@@ -56,6 +56,6 @@ export default async function LoginPage({
         <button type="submit" className="w-full rounded-lg bg-brand px-4 py-3 font-semibold text-white">Ingresar</button>
       </form>
       <p className="mt-5 text-sm text-slate-600">¿No tenés cuenta? <Link href="/registro">Registrate</Link>.</p>
-    </section>
+    </main>
   );
 }

@@ -46,7 +46,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <section className="mx-auto max-w-md px-4 py-12">
+    <main className="mx-auto min-h-screen max-w-md px-4 py-12">
       <h1 className="text-3xl font-bold">Crear cuenta</h1>
       <form onSubmit={handleSubmit} className="mt-6 space-y-5 rounded-xl border border-slate-200 bg-white p-6">
         <div>
@@ -68,6 +68,6 @@ export default function RegisterPage() {
         </button>
       </form>
       <p className="mt-5 text-sm text-slate-600">¿Ya tenés cuenta? <Link href="/login">Ingresá</Link>.</p>
-    </section>
+    </main>
   );
 }

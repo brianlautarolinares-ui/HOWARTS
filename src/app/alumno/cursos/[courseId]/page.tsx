@@ -1,9 +1,11 @@
 import { auth } from "@/auth";
 import { PdfMaterialViewer } from "@/components/pdf-material-viewer";
+import { QuizAttemptForm } from "@/components/quiz-attempt-form";
 import { canAccessCourse } from "@/lib/course-access";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { markClassCompleted } from "@/app/admin/cursos/actions";
 
 export default async function StudentCoursePage({
   params
@@ -17,6 +19,7 @@ export default async function StudentCoursePage({
   const enrollment = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: session.user.id, courseId } },
     select: {
+      id: true,
       status: true,
       course: {
         select: {
@@ -35,10 +38,21 @@ export default async function StudentCoursePage({
                   title: true,
                   scheduledAt: true,
                   meetingUrl: true,
+                  recordingUrl: true,
                   developedTopic: true,
                   authorCredit: true,
                   pdfName: true,
-                  releasedAt: true
+                  releasedAt: true,
+                  quiz: {
+                    select: {
+                      id: true,
+                      passingPercent: true,
+                      questions: {
+                        orderBy: { position: "asc" },
+                        select: { id: true, prompt: true, choices: true }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -50,6 +64,31 @@ export default async function StudentCoursePage({
 
   if (!enrollment || !canAccessCourse("STUDENT", enrollment.status)) notFound();
 
+  const [progressRecords, attempts] = await Promise.all([
+    prisma.classProgress.findMany({
+      where: { enrollmentId: enrollment.id },
+      select: { liveClassId: true }
+    }),
+    prisma.quizAttempt.findMany({
+      where: { enrollmentId: enrollment.id },
+      orderBy: { attemptedAt: "desc" },
+      select: { quizId: true, scorePercent: true, passed: true }
+    })
+  ]);
+  const completedClassIds = new Set(progressRecords.map((progress) => progress.liveClassId));
+  const latestAttemptByQuiz = new Map<string, { scorePercent: number; passed: boolean }>();
+  for (const attempt of attempts) {
+    if (!latestAttemptByQuiz.has(attempt.quizId)) {
+      latestAttemptByQuiz.set(attempt.quizId, { scorePercent: attempt.scorePercent, passed: attempt.passed });
+    }
+  }
+  const totalClasses = enrollment.course.stages.reduce((total, stage) => total + stage.classes.length, 0);
+  const completedClasses = enrollment.course.stages.reduce(
+    (total, stage) => total + stage.classes.filter((liveClass) => completedClassIds.has(liveClass.id)).length,
+    0
+  );
+  const progressPercent = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 py-10">
       <Link href="/alumno" className="text-sm font-semibold text-brand">Volver a mis cursos</Link>
@@ -58,6 +97,15 @@ export default async function StudentCoursePage({
           <p className="text-sm font-semibold uppercase text-brand">Curso · {enrollment.status === "COMPLETED" ? "Finalizado" : "Inscripción confirmada"}</p>
           <h1 className="mt-2 text-3xl font-bold">{enrollment.course.title}</h1>
           <p className="mt-2 text-slate-600">{enrollment.course.summary}</p>
+          <div className="mt-5 max-w-xl" aria-label={`Progreso del curso: ${progressPercent}%`}>
+            <div className="flex justify-between text-sm">
+              <span>Progreso</span>
+              <span>{completedClasses} de {totalClasses} clases · {progressPercent}%</span>
+            </div>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-valuenow={progressPercent} aria-valuemin={0} aria-valuemax={100} aria-label="Progreso del curso">
+              <div className="h-full bg-brand" style={{ width: `${progressPercent}%` }} />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -84,6 +132,11 @@ export default async function StudentCoursePage({
 
                       {liveClass.releasedAt && liveClass.developedTopic && liveClass.pdfName && liveClass.authorCredit ? (
                         <div className="mt-5">
+                          {liveClass.recordingUrl ? (
+                            <a href={liveClass.recordingUrl} target="_blank" rel="noreferrer" className="mb-4 inline-block font-semibold text-brand">
+                              Ver grabación de la clase
+                            </a>
+                          ) : null}
                           <h4 className="font-semibold">Tema desarrollado</h4>
                           <p className="mt-2 whitespace-pre-wrap leading-7 text-slate-700">{liveClass.developedTopic}</p>
                           <p className="mt-4 text-xs text-slate-500">Material de autoría: {liveClass.authorCredit}</p>
@@ -92,6 +145,33 @@ export default async function StudentCoursePage({
                             studentLabel={session.user.email ?? session.user.name ?? "Alumno"}
                             authorCredit={liveClass.authorCredit}
                           />
+                          {completedClassIds.has(liveClass.id) ? (
+                            <p role="status" className="mt-4 text-sm font-medium text-emerald-700">Clase completada</p>
+                          ) : (
+                            <form action={markClassCompleted.bind(null, liveClass.id)} className="mt-4">
+                              <button type="submit" className="rounded-md border border-slate-300 px-4 py-2 font-semibold">Marcar clase como completada</button>
+                            </form>
+                          )}
+                          {liveClass.quiz?.questions.length ? (
+                            <section className="mt-6 border-t border-slate-200 pt-4" aria-label={`Evaluación de ${liveClass.title}`}>
+                              <p className="mb-3 text-sm text-slate-600">Aprobación: {liveClass.quiz.passingPercent}% · Reintentos permitidos.</p>
+                              {latestAttemptByQuiz.has(liveClass.quiz.id) ? (
+                                <p className="mb-4 text-sm" role="status">
+                                  Último resultado: {latestAttemptByQuiz.get(liveClass.quiz.id)?.scorePercent}% · {latestAttemptByQuiz.get(liveClass.quiz.id)?.passed ? "Aprobada" : "Podés volver a intentarlo"}.
+                                </p>
+                              ) : null}
+                              <QuizAttemptForm
+                                quizId={liveClass.quiz.id}
+                                questions={liveClass.quiz.questions.map((question) => ({
+                                  id: question.id,
+                                  prompt: question.prompt,
+                                  choices: Array.isArray(question.choices)
+                                    ? question.choices.filter((choice): choice is string => typeof choice === "string")
+                                    : []
+                                }))}
+                              />
+                            </section>
+                          ) : null}
                         </div>
                       ) : (
                         <p className="mt-4 border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-slate-700">

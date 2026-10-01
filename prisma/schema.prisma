@@ -85,6 +85,8 @@ model Enrollment {
   completedAt DateTime?
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classProgress ClassProgress[]
+  quizAttempts QuizAttempt[]
 
   @@unique([userId, courseId])
   @@index([courseId])
@@ -142,6 +144,7 @@ model LiveClass {
   title          String      @db.VarChar(160)
   scheduledAt    DateTime
   meetingUrl     String?     @db.VarChar(500)
+  recordingUrl   String?     @db.VarChar(500)
   developedTopic String?     @db.Text
   authorCredit   String?     @db.VarChar(120)
   pdfName        String?     @db.VarChar(255)
@@ -150,6 +153,59 @@ model LiveClass {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   stage          CourseStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  progress       ClassProgress[]
+  quiz           ClassQuiz?
 
   @@index([stageId, scheduledAt])
+}
+
+model ClassProgress {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  liveClassId  String
+  completedAt  DateTime   @default(now())
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  liveClass    LiveClass  @relation(fields: [liveClassId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, liveClassId])
+  @@index([liveClassId])
+}
+
+model ClassQuiz {
+  id             String         @id @default(cuid())
+  liveClassId    String         @unique
+  passingPercent Int            @default(70)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  liveClass      LiveClass      @relation(fields: [liveClassId], references: [id], onDelete: Cascade)
+  questions      QuizQuestion[]
+  attempts       QuizAttempt[]
+}
+
+model QuizQuestion {
+  id             String    @id @default(cuid())
+  quizId         String
+  prompt         String    @db.VarChar(1000)
+  choices        Json
+  correctAnswer  String    @db.VarChar(300)
+  position       Int
+  quiz           ClassQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@unique([quizId, position])
+  @@index([quizId])
+}
+
+model QuizAttempt {
+  id             String     @id @default(cuid())
+  quizId         String
+  enrollmentId   String
+  answers        Json
+  scorePercent   Int
+  passed         Boolean
+  attemptedAt    DateTime   @default(now())
+  quiz           ClassQuiz  @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  enrollment     Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  @@index([enrollmentId, quizId, attemptedAt])
+  @@index([quizId, passed])
 }

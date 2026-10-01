@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { courseManagementSchema, liveClassSchema } from "./course-content";
+import { courseManagementSchema, liveClassSchema, quizQuestionSchema } from "./course-content";
 
 describe("courseManagementSchema", () => {
   it("parses a valid ARS course price", () => {
@@ -41,5 +41,30 @@ describe("liveClassSchema", () => {
 
     expect(liveClassSchema.safeParse(valid).success).toBe(true);
     expect(liveClassSchema.safeParse({ ...valid, meetingUrl: "javascript:alert(1)" }).success).toBe(false);
+  });
+});
+
+describe("quizQuestionSchema", () => {
+  const question = {
+    liveClassId: "class-1",
+    prompt: "¿Cuál es el primer paso?",
+    choices: "Investigar\nPlanificar\nPublicar",
+    correctAnswer: "Planificar",
+    passingPercent: "70"
+  };
+
+  it("accepts a question with 2 to 6 unique choices and a matching answer", () => {
+    const result = quizQuestionSchema.safeParse(question);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.choices).toHaveLength(3);
+      expect(result.data.passingPercent).toBe(70);
+    }
+  });
+
+  it("rejects an answer outside the choices and duplicate choices", () => {
+    expect(quizQuestionSchema.safeParse({ ...question, correctAnswer: "Otra" }).success).toBe(false);
+    expect(quizQuestionSchema.safeParse({ ...question, choices: "A\nA" }).success).toBe(false);
   });
 });

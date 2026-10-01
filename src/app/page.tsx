@@ -30,7 +30,7 @@ export default async function HomePage() {
         <div>
           <p className="text-sm font-semibold uppercase text-brand">Campus virtual</p>
           <h1 className="mt-4 max-w-2xl text-4xl font-bold leading-tight text-ink sm:text-5xl">
-            Aprendé algo nuevo, paso a paso.
+            Un hechicito no le hace mal a nadie.
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
             Encontrá cursos prácticos y seguí tu recorrido desde un solo lugar.

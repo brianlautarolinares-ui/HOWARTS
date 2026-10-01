@@ -27,7 +27,8 @@ export default async function AdminCoursesPage({
     etapa: "Revisá los datos de la etapa.",
     clase: "Revisá el título, fecha y enlace de la clase.",
     material: "El tema o crédito de autor no es válido.",
-    pdf: "El archivo debe ser un PDF válido de hasta 10 MB."
+    pdf: "El archivo debe ser un PDF válido de hasta 10 MB.",
+    evaluacion: "Revisá el enunciado, las opciones, la respuesta correcta y el puntaje mínimo."
   }[query.error ?? ""];
 
   return (

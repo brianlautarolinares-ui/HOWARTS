@@ -30,4 +30,8 @@ ADMIN crea el curso con precio y estado, lo divide en etapas y registra cada cla
 
 Los archivos se guardan en PostgreSQL para esta primera versión. El visor oculta controles de descarga/impresión y el PDF servido lleva una marca de agua por alumno y autor. Esto desalienta la redistribución, pero no puede impedir capturas del sistema operativo.
 
-El progreso, las evaluaciones, los certificados, las automatizaciones y las suscripciones quedan fuera de la Fase 2.
+### Grabaciones, progreso y evaluaciones (Fase 3)
+
+ADMIN puede asociar una grabación por enlace a una clase y agregar preguntas de opción múltiple con respuesta correcta y puntaje mínimo configurable. El alumno con inscripción `ACTIVE` o `COMPLETED` puede marcar como completadas las clases cuyo material ya fue publicado; el campus guarda el progreso y permite reintentar las evaluaciones. El API valida que las respuestas pertenezcan a las opciones, califica en servidor y nunca devuelve las respuestas correctas al cliente.
+
+Los certificados, las automatizaciones y las suscripciones quedan fuera de esta fase.

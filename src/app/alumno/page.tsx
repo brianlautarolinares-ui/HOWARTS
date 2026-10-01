@@ -15,7 +15,7 @@ export default async function StudentDashboardPage() {
   });
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12">
+    <main className="mx-auto min-h-screen max-w-6xl px-4 py-12">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Mi campus</h1>
@@ -47,6 +47,6 @@ export default async function StudentDashboardPage() {
           ))}
         </div>
       )}
-    </section>
+    </main>
   );
 }
