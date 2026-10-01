@@ -28,6 +28,7 @@
 - [x] Activar `Payment.APPROVED` y `Enrollment.ACTIVE` en una transacción idempotente.
 - [x] Añadir control de acceso a cursos por `Enrollment.ACTIVE`/`COMPLETED` y rol ADMIN.
 - [x] Añadir pruebas unitarias de acceso permitido y acceso indebido.
+- [x] Crear bandeja ADMIN para revisar solicitudes pendientes y confirmar pagos manuales.
 - [x] Permitir al ADMIN configurar los datos de cobro y mostrarlos en el checkout del curso.
 - [x] Crear cursos con monto y publicación, organizarlos por etapas y pactar fecha/hora de clases.
 - [x] Habilitar que ADMIN publique tema y PDF después de la clase.

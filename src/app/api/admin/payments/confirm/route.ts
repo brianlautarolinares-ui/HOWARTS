@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { userId, courseId, method, reference, amountArs } = parsed.data;
-  const normalizedReference = reference || undefined;
+  const normalizedReference = reference || `MANUAL-${userId}-${courseId}`;
 
   try {
     const result = await prisma.$transaction(async (transaction) => {

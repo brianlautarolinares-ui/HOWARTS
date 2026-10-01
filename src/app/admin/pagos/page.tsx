@@ -23,6 +23,7 @@ export default async function PaymentSettingsPage({
       <nav className="flex gap-5 text-sm font-semibold text-brand">
         <Link href="/alumno">Volver al campus</Link>
         <Link href="/admin/cursos">Administrar cursos</Link>
+        <Link href="/admin/pagos/solicitudes">Solicitudes de pago</Link>
       </nav>
       <h1 className="mt-6 text-3xl font-bold">Datos para recibir pagos</h1>
       <p className="mt-2 max-w-2xl text-slate-600">

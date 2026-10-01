@@ -16,7 +16,7 @@ Profesora autenticada -> formulario -> Server Action -> verificación de rol -> 
 
 ### Pago manual e inscripción (Fase 2)
 
-ADMIN configura una cuenta de cobro -> el alumno elige un curso publicado y ve el importe y los datos configurados -> solicita acceso después de pagar -> se crea o conserva `Enrollment.PENDING` -> un administrador confirma el pago mediante el endpoint protegido -> se validan alumno, curso publicado, importe y referencia -> transacción idempotente actualiza `Payment.APPROVED` y `Enrollment.ACTIVE`.
+ADMIN configura una cuenta de cobro -> el alumno elige un curso publicado y ve el importe y los datos configurados -> solicita acceso después de pagar -> se crea o conserva `Enrollment.PENDING` -> ADMIN revisa la solicitud en `/admin/pagos/solicitudes` y confirma medio, importe y referencia -> el endpoint protegido valida la operación y una transacción idempotente actualiza `Payment.APPROVED` y `Enrollment.ACTIVE`.
 
 Un `Enrollment` `PENDING`, `CANCELLED` o sin pago aprobado no habilita contenido privado. El navegador nunca puede activar una inscripción por sí mismo.
 

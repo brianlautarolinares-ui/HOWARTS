@@ -35,6 +35,7 @@ export default async function AdminCoursesPage({
       <nav className="flex flex-wrap gap-5 text-sm font-semibold text-brand">
         <Link href="/alumno">Volver al campus</Link>
         <Link href="/admin/pagos">Datos de cobro</Link>
+        <Link href="/admin/pagos/solicitudes">Solicitudes de pago</Link>
       </nav>
       <h1 className="mt-7 text-3xl font-bold">Cursos y capacitaciones</h1>
 
