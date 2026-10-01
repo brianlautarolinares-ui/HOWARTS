@@ -22,6 +22,19 @@ enum EnrollmentStatus {
   ACTIVE
   COMPLETED
   CANCELLED
+  PENDING
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
 }
 
 model User {
@@ -35,6 +48,8 @@ model User {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   enrollments   Enrollment[]
+  payments      Payment[]
+  paymentsRecorded Payment[] @relation("PaymentRecorder")
   coursesCreated Course[]    @relation("CourseCreator")
 
   @@index([role])
@@ -54,6 +69,7 @@ model Course {
   updatedAt   DateTime     @updatedAt
   creator     User         @relation("CourseCreator", fields: [creatorId], references: [id], onDelete: Restrict)
   enrollments Enrollment[]
+  payments    Payment[]
 
   @@index([status])
   @@index([creatorId])
@@ -63,7 +79,7 @@ model Enrollment {
   id          String           @id @default(cuid())
   userId      String
   courseId    String
-  status      EnrollmentStatus @default(ACTIVE)
+  status      EnrollmentStatus @default(PENDING)
   enrolledAt  DateTime         @default(now())
   completedAt DateTime?
   user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -72,4 +88,24 @@ model Enrollment {
   @@unique([userId, courseId])
   @@index([courseId])
   @@index([userId, status])
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  userId            String
+  courseId          String
+  method            PaymentMethod
+  reference         String?       @unique
+  amountArs         Int
+  status            PaymentStatus @default(PENDING)
+  paidAt            DateTime?
+  recordedById      String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  user              User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  course            Course        @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  recordedBy        User?         @relation("PaymentRecorder", fields: [recordedById], references: [id], onDelete: Restrict)
+
+  @@index([userId, status])
+  @@index([courseId, status])
 }

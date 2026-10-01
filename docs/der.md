@@ -27,4 +27,15 @@ erDiagram
     string courseId FK
     EnrollmentStatus status
   }
+  PAYMENT {
+    string id PK
+    string userId FK
+    string courseId FK
+    PaymentMethod method
+    string reference UK
+    int amountArs
+    PaymentStatus status
+  }
+  USER ||--o{ PAYMENT : makes
+  COURSE ||--o{ PAYMENT : receives
 ```
