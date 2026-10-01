@@ -39,6 +39,9 @@ erDiagram
   USER ||--o{ PAYMENT : makes
   COURSE ||--o{ PAYMENT : receives
 
+  COURSE ||--o{ COURSE_STAGE : contains
+  COURSE_STAGE ||--o{ LIVE_CLASS : schedules
+
   PAYMENT_SETTINGS {
     string id PK
     string institution
@@ -47,5 +50,22 @@ erDiagram
     string alias
     string taxId
     string instructions
+  }
+  COURSE_STAGE {
+    string id PK
+    string courseId FK
+    string title
+    int position
+  }
+  LIVE_CLASS {
+    string id PK
+    string stageId FK
+    string title
+    datetime scheduledAt
+    string meetingUrl
+    string developedTopic
+    string authorCredit
+    bytes pdfData
+    datetime releasedAt
   }
 ```

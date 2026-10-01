@@ -24,4 +24,10 @@ La ruta protegida de acceso a cursos responde `401` sin sesión, `403` sin una i
 
 Los datos de cobro se guardan en `PaymentSettings`, se editan solo desde `/admin/pagos` y se muestran en el checkout. El destino todavía se configura como una sola cuenta; la elección de pasarela y los webhooks automáticos quedan pendientes.
 
+### Clases y materiales del curso
+
+ADMIN crea el curso con precio y estado, lo divide en etapas y registra cada clase con fecha/hora de Argentina y enlace de reunión opcional. Al pasar la fecha pactada, puede publicar el tema desarrollado, el PDF (máximo 10 MB) y el crédito de autor. Las inscripciones `ACTIVE` y `COMPLETED` pueden consultar el material desde su campus; la ruta del PDF vuelve a comprobar la sesión y la inscripción.
+
+Los archivos se guardan en PostgreSQL para esta primera versión. El visor oculta controles de descarga/impresión y el PDF servido lleva una marca de agua por alumno y autor. Esto desalienta la redistribución, pero no puede impedir capturas del sistema operativo.
+
 El progreso, las evaluaciones, los certificados, las automatizaciones y las suscripciones quedan fuera de la Fase 2.

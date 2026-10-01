@@ -21,9 +21,10 @@ export default async function StudentDashboardPage() {
           <h1 className="text-3xl font-bold">Mi campus</h1>
           <p className="mt-1 text-slate-600">Hola, {session.user.name ?? "alumno"}.</p>
           {session.user.role === "ADMIN" ? (
-            <Link href="/admin/pagos" className="mt-3 inline-block text-sm font-semibold text-brand">
-              Configurar datos de cobro
-            </Link>
+            <nav className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-brand" aria-label="Administración">
+              <Link href="/admin/cursos">Administrar cursos</Link>
+              <Link href="/admin/pagos">Configurar datos de cobro</Link>
+            </nav>
           ) : null}
         </div>
         <LogoutButton />
@@ -37,6 +38,11 @@ export default async function StudentDashboardPage() {
             <article key={enrollment.id} className="rounded-xl border border-slate-200 bg-white p-5">
               <h3 className="font-bold">{enrollment.course.title}</h3>
               <p className="mt-2 text-sm text-slate-600">Estado: {enrollment.status}</p>
+              {enrollment.status === "ACTIVE" || enrollment.status === "COMPLETED" ? (
+                <Link href={`/alumno/cursos/${enrollment.courseId}`} className="mt-4 inline-block font-semibold text-brand">
+                  Abrir curso
+                </Link>
+              ) : null}
             </article>
           ))}
         </div>

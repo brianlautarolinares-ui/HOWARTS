@@ -7,3 +7,4 @@
 5. **Precio como entero en ARS**: evita errores de coma flotante. Para importes con centavos se deberá migrar a unidades mínimas.
 6. **Inscripción con estado pendiente**: una compra crea o actualiza una inscripción `PENDING`; solo la confirmación válida del proveedor puede pasarla a `ACTIVE`.
 7. **Pagos manuales inicialmente**: `Payment` conserva método (`CASH` o `BANK_TRANSFER`), referencia opcional, importe en ARS y administrador que lo registró. `PaymentSettings` guarda una cuenta de cobro configurable por ADMIN y visible en el checkout. La pasarela y los webhooks quedan pendientes de decisión.
+8. **Material de clases**: `CourseStage` agrupa `LiveClass`; los PDFs de hasta 10 MB se guardan como `BYTEA` en PostgreSQL mientras no haya un bucket privado configurado. La entrega revalida la inscripción y genera un PDF con marca de agua por alumno y autor. Capturas de pantalla no pueden bloquearse de forma absoluta desde una aplicación web.

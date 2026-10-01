@@ -20,7 +20,10 @@ export default async function PaymentSettingsPage({
 
   return (
     <main className="mx-auto min-h-screen max-w-4xl px-4 py-10">
-      <Link href="/alumno" className="text-sm font-semibold text-brand">Volver al campus</Link>
+      <nav className="flex gap-5 text-sm font-semibold text-brand">
+        <Link href="/alumno">Volver al campus</Link>
+        <Link href="/admin/cursos">Administrar cursos</Link>
+      </nav>
       <h1 className="mt-6 text-3xl font-bold">Datos para recibir pagos</h1>
       <p className="mt-2 max-w-2xl text-slate-600">
         Estos datos se mostrarán a los alumnos al solicitar un curso o capacitación.

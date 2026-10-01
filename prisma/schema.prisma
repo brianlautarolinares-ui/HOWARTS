@@ -70,6 +70,7 @@ model Course {
   creator     User         @relation("CourseCreator", fields: [creatorId], references: [id], onDelete: Restrict)
   enrollments Enrollment[]
   payments    Payment[]
+  stages      CourseStage[]
 
   @@index([status])
   @@index([creatorId])
@@ -119,4 +120,36 @@ model PaymentSettings {
   taxId             String?  @db.VarChar(40)
   instructions      String?  @db.Text
   updatedAt         DateTime @updatedAt
+}
+
+model CourseStage {
+  id        String      @id @default(cuid())
+  courseId  String
+  title     String      @db.VarChar(120)
+  position  Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime   @updatedAt
+  course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classes   LiveClass[]
+
+  @@unique([courseId, position])
+  @@index([courseId])
+}
+
+model LiveClass {
+  id             String      @id @default(cuid())
+  stageId        String
+  title          String      @db.VarChar(160)
+  scheduledAt    DateTime
+  meetingUrl     String?     @db.VarChar(500)
+  developedTopic String?     @db.Text
+  authorCredit   String?     @db.VarChar(120)
+  pdfName        String?     @db.VarChar(255)
+  pdfData        Bytes?
+  releasedAt     DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  stage          CourseStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  @@index([stageId, scheduledAt])
 }

@@ -3,7 +3,7 @@
 ## Estado por fases
 
 - [x] FASE 1: Landing, registro/login, usuarios, catálogo, curso, panel alumno, panel profesora
-- [ ] FASE 2 (en curso): pagos manuales, inscripciones y control de acceso (pasarela pendiente de definición)
+- [ ] FASE 2 (en curso): pagos manuales, cursos por etapas, clases en vivo y materiales protegidos (pasarela pendiente de definición)
 - [ ] FASE 3: Videos, PDFs, módulos, progreso, evaluaciones
 - [ ] FASE 4: Certificados, QR, verificación pública
 - [ ] FASE 5: n8n, emails, WhatsApp, recordatorios, reportes, estadísticas
@@ -29,9 +29,13 @@
 - [x] Añadir control de acceso a cursos por `Enrollment.ACTIVE`/`COMPLETED` y rol ADMIN.
 - [x] Añadir pruebas unitarias de acceso permitido y acceso indebido.
 - [x] Permitir al ADMIN configurar los datos de cobro y mostrarlos en el checkout del curso.
+- [x] Crear cursos con monto y publicación, organizarlos por etapas y pactar fecha/hora de clases.
+- [x] Habilitar que ADMIN publique tema y PDF después de la clase.
+- [x] Mantener el acceso a materiales para inscripciones `ACTIVE` y `COMPLETED`.
+- [x] Guardar PDFs privados en PostgreSQL (máximo 10 MB) y estampar alumno y autor en cada página.
 - [ ] Definir pasarela de pago para automatizar cobros y webhooks.
-- [ ] Completar pruebas de compra manual, `npm run build` y revisión responsive/accesibilidad.
+- [ ] Completar prueba integral del flujo, `npm run build` y revisión responsive/accesibilidad.
 
 ## Regla de avance
 
-No iniciar Fase 2 hasta que el propietario del proyecto escriba `continuar` y el checklist de Fase 1 esté aprobado.
+No iniciar Fase 3 hasta que el propietario del proyecto escriba `continuar` y el checklist de Fase 2 esté aprobado.
