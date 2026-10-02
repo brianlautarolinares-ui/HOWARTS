@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
+import { dispatchEmailEvent } from "@/lib/notification-events";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -11,7 +12,7 @@ export async function requestEnrollment(courseId: string) {
 
   const course = await prisma.course.findFirst({
     where: { id: courseId, status: "PUBLISHED" },
-    select: { id: true }
+    select: { id: true, title: true }
   });
   if (!course) redirect("/");
 
@@ -30,6 +31,17 @@ export async function requestEnrollment(courseId: string) {
     create: { userId: session.user.id, courseId, status: "PENDING" },
     update: existing?.status === "CANCELLED" ? { status: "PENDING", completedAt: null } : {}
   });
+
+  if (!existing || existing.status === "CANCELLED") {
+    if (session.user.email) {
+      const emailResult = await dispatchEmailEvent("payment.requested", {
+        email: session.user.email,
+        name: session.user.name ?? "alumno",
+        courseTitle: course.title
+      });
+      if (!emailResult.ok) console.error("payment_pending_email_failed", emailResult.message);
+    }
+  }
 
   redirect(`${paymentPath}?solicitud=pendiente`);
 }

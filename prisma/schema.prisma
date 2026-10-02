@@ -51,6 +51,7 @@ model User {
   payments      Payment[]
   paymentsRecorded Payment[] @relation("PaymentRecorder")
   coursesCreated Course[]    @relation("CourseCreator")
+  certificates  Certificate[]
 
   @@index([role])
 }
@@ -71,6 +72,7 @@ model Course {
   enrollments Enrollment[]
   payments    Payment[]
   stages      CourseStage[]
+  certificates Certificate[]
 
   @@index([status])
   @@index([creatorId])
@@ -87,6 +89,7 @@ model Enrollment {
   course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
   classProgress ClassProgress[]
   quizAttempts QuizAttempt[]
+  certificate Certificate?
 
   @@unique([userId, courseId])
   @@index([courseId])
@@ -111,6 +114,22 @@ model Payment {
 
   @@index([userId, status])
   @@index([courseId, status])
+}
+
+model Certificate {
+  id              String     @id @default(cuid())
+  code            String     @unique
+  userId          String
+  courseId        String
+  enrollmentId    String     @unique
+  issuedAt        DateTime   @default(now())
+  verificationUrl String     @db.VarChar(500)
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course          Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollment      Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@index([userId])
 }
 
 model PaymentSettings {

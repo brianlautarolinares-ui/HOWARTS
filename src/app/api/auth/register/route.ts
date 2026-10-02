@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { dispatchEmailEvent } from "@/lib/notification-events";
 import { registerSchema } from "@/lib/validators/auth";
 import { checkAuthRateLimit } from "@/lib/rate-limit";
 
@@ -48,6 +49,9 @@ export async function POST(request: NextRequest) {
       },
       select: { id: true, name: true, email: true, role: true }
     });
+
+    const emailResult = await dispatchEmailEvent("user.registered", user);
+    if (!emailResult.ok) console.error("welcome_email_failed", emailResult.message);
 
     return NextResponse.json({ user }, { status: 201 });
   } catch (error: unknown) {

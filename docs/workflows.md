@@ -35,3 +35,9 @@ Los archivos se guardan en PostgreSQL para esta primera versión. El visor ocult
 ADMIN puede asociar una grabación por enlace a una clase y agregar preguntas de opción múltiple con respuesta correcta y puntaje mínimo configurable. El alumno con inscripción `ACTIVE` o `COMPLETED` puede marcar como completadas las clases cuyo material ya fue publicado; el campus guarda el progreso y permite reintentar las evaluaciones. El API valida que las respuestas pertenezcan a las opciones, califica en servidor y nunca devuelve las respuestas correctas al cliente.
 
 Los certificados, las automatizaciones y las suscripciones quedan fuera de esta fase.
+
+### Emails transaccionales (Fase 5)
+
+Los emails se envían desde la aplicación mediante Resend, sin n8n. En desarrollo, `EMAIL_PROVIDER=console` registra solo destinatario y asunto; para enviar en un entorno real se configura `EMAIL_PROVIDER=resend`, `RESEND_API_KEY` y `EMAIL_FROM` con un dominio verificado en Resend.
+
+Los eventos integrados son `user.registered` (bienvenida), solicitud de inscripción (`payment.requested`), primera aprobación del pago (`payment.approved`) y emisión del certificado (`course.completed`). El dispatcher también soporta `class.reminder`, pero la programación periódica de esos recordatorios todavía requiere implementar y configurar un cron seguro. Si falla la entrega, se registra el error y no se revierte la operación principal del alumno; todavía no hay cola persistente ni reintentos automáticos.

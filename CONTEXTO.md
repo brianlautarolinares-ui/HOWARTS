@@ -6,7 +6,7 @@
 - [x] FASE 2: pagos manuales, cursos por etapas, clases en vivo y materiales protegidos (pasarela automática aplazada)
 - [ ] FASE 3 (en curso): grabaciones, seguimiento de clases y evaluaciones
 - [ ] FASE 4: Certificados, QR, verificación pública
-- [ ] FASE 5: n8n, emails, WhatsApp, recordatorios, reportes, estadísticas
+- [ ] FASE 5: emails transaccionales por evento, recordatorios, reportes y estadísticas (sin n8n)
 - [ ] FASE 6: Suscripciones, promociones, cupones, packs, clases en vivo
 
 ## Pendientes antes de declarar Fase 1 lista para producción

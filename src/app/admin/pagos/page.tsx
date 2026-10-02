@@ -22,6 +22,7 @@ export default async function PaymentSettingsPage({
     <main className="mx-auto min-h-screen max-w-4xl px-4 py-10">
       <nav className="flex gap-5 text-sm font-semibold text-brand">
         <Link href="/alumno">Volver al campus</Link>
+        <Link href="/admin">Dashboard</Link>
         <Link href="/admin/cursos">Administrar cursos</Link>
         <Link href="/admin/pagos/solicitudes">Solicitudes de pago</Link>
       </nav>

@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { dispatchEmailEvent } from "@/lib/notification-events";
 import { PaymentMethod } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
             update: { status: "ACTIVE", completedAt: null }
           });
 
-          return payment;
+          return { payment, shouldNotify: existingPayment.status !== "APPROVED" };
         }
       }
 
@@ -98,10 +99,27 @@ export async function POST(request: NextRequest) {
         update: { status: "ACTIVE", completedAt: null }
       });
 
-      return payment;
+      return { payment, shouldNotify: true };
     });
 
-    return NextResponse.json({ payment: result }, { status: 201 });
+    if (result.shouldNotify) {
+      const [user, course] = await Promise.all([
+        prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } }),
+        prisma.course.findUnique({ where: { id: courseId }, select: { title: true } })
+      ]);
+
+      if (user && course) {
+        const emailResult = await dispatchEmailEvent("payment.approved", {
+          email: user.email,
+          name: user.name,
+          courseTitle: course.title,
+          amount: new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(amountArs)
+        });
+        if (!emailResult.ok) console.error("payment_approved_email_failed", emailResult.message);
+      }
+    }
+
+    return NextResponse.json({ payment: result.payment }, { status: 201 });
   } catch (error: unknown) {
     if (error instanceof Error) {
       if (error.message === "INVALID_PURCHASE") {

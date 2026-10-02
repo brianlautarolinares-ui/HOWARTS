@@ -6,16 +6,25 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { markClassCompleted } from "@/app/admin/cursos/actions";
+import { issueCourseCertificate } from "./actions";
+import { buildVerificationUrl } from "@/lib/certificate";
 
 export default async function StudentCoursePage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ courseId: string }>;
+  searchParams?: Promise<{ certificate?: string; error?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const { courseId } = await params;
+  const [{ courseId }, rawQuery] = await Promise.all([
+    params,
+    searchParams ?? Promise.resolve({})
+  ]);
+  const query = (rawQuery ?? {}) as { certificate?: string; error?: string };
+
   const enrollment = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: session.user.id, courseId } },
     select: {
@@ -64,7 +73,7 @@ export default async function StudentCoursePage({
 
   if (!enrollment || !canAccessCourse("STUDENT", enrollment.status)) notFound();
 
-  const [progressRecords, attempts] = await Promise.all([
+  const [progressRecords, attempts, certificate] = await Promise.all([
     prisma.classProgress.findMany({
       where: { enrollmentId: enrollment.id },
       select: { liveClassId: true }
@@ -73,6 +82,10 @@ export default async function StudentCoursePage({
       where: { enrollmentId: enrollment.id },
       orderBy: { attemptedAt: "desc" },
       select: { quizId: true, scorePercent: true, passed: true }
+    }),
+    prisma.certificate.findUnique({
+      where: { enrollmentId: enrollment.id },
+      select: { code: true }
     })
   ]);
   const completedClassIds = new Set(progressRecords.map((progress) => progress.liveClassId));
@@ -88,6 +101,8 @@ export default async function StudentCoursePage({
     0
   );
   const progressPercent = totalClasses > 0 ? Math.round((completedClasses / totalClasses) * 100) : 0;
+  const courseIsComplete = totalClasses > 0 && completedClasses === totalClasses;
+  const verificationUrl = certificate ? buildVerificationUrl(certificate.code) : null;
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 py-10">
@@ -108,6 +123,32 @@ export default async function StudentCoursePage({
           </div>
         </div>
       </div>
+
+      {query?.error === "completo" ? (
+        <p className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+          Para obtener el certificado, primero marcá todas las clases como completadas y aprobá las evaluaciones necesarias.
+        </p>
+      ) : null}
+
+      {certificate && verificationUrl ? (
+        <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+          <p className="text-sm font-semibold uppercase text-emerald-800">Certificado emitido</p>
+          <p className="mt-2 text-sm text-emerald-900">Código: {certificate.code}</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a href={verificationUrl} target="_blank" rel="noreferrer" className="rounded-md bg-emerald-700 px-4 py-2 font-semibold text-white">
+              Ver certificado público
+            </a>
+          </div>
+        </div>
+      ) : null}
+
+      {courseIsComplete && !certificate ? (
+        <form action={issueCourseCertificate.bind(null, courseId)} className="mt-6">
+          <button type="submit" className="rounded-md bg-brand px-5 py-3 font-semibold text-white">
+            Emitir certificado del curso
+          </button>
+        </form>
+      ) : null}
 
       {enrollment.course.stages.length === 0 ? (
         <p className="mt-8 border-t border-slate-300 py-6 text-slate-600">Todavía no hay etapas publicadas.</p>
