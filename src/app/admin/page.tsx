@@ -28,7 +28,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-6xl px-4 py-10">
-      <nav className="flex flex-wrap gap-5 text-sm font-semibold text-brand">
+      <nav aria-label="Navegación de administración" className="flex flex-wrap gap-5 text-sm font-semibold text-brand">
         <Link href="/alumno">Volver al campus</Link>
         <Link href="/admin/cursos">Cursos</Link>
         <Link href="/admin/pagos">Datos de cobro</Link>
@@ -43,7 +43,8 @@ export default async function AdminDashboardPage() {
         </p>
       </header>
 
-      <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <section aria-labelledby="metrics-heading" className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <h2 id="metrics-heading" className="sr-only">Métricas del campus</h2>
         <MetricCard title="Estudiantes" value={String(metrics.totalStudents)} description="Usuarios activos" />
         <MetricCard title="Cursos" value={String(metrics.publishedCourses)} description="Publicados" />
         <MetricCard title="Inscripciones" value={String(metrics.activeEnrollments)} description="Activas o finalizadas" />
@@ -51,9 +52,9 @@ export default async function AdminDashboardPage() {
         <MetricCard title="Ingresos" value={formatCurrency(metrics.approvedRevenue)} description="Pagos aprobados" />
       </section>
 
-      <section className="mt-10 grid gap-6 lg:grid-cols-2">
+      <section aria-labelledby="key-indicators-heading" className="mt-10 grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
-          <h2 className="text-xl font-bold">Indicadores clave</h2>
+          <h2 id="key-indicators-heading" className="text-xl font-bold">Indicadores clave</h2>
           <ul className="mt-5 space-y-3 text-sm text-slate-700">
             <li className="flex items-center justify-between border-b border-slate-200 pb-2">
               <span>Usuarios registrados</span>

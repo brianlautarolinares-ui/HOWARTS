@@ -23,6 +23,23 @@ export const courseStageSchema = z.object({
   title: z.string().trim().min(2).max(120)
 });
 
+export const courseClassDraftSchema = z.object({
+  title: z.string().trim().min(2).max(160),
+  developedTopic: z.string().trim().min(10).max(20000),
+  authorCredit: z.string().trim().min(2).max(120)
+});
+
+export const classCountSchema = z.string().regex(/^(?:[1-9]|[12]\d|30)$/).transform(Number);
+
+export const preparedClassScheduleSchema = z.object({
+  classId: z.string().min(1),
+  scheduledAt: z.string().refine((value) => {
+    const date = new Date(value);
+    return value.length > 0 && !Number.isNaN(date.getTime());
+  }, "Ingresá una fecha y hora válidas."),
+  meetingUrl: z.string().trim().max(500).refine(isHttpUrl, "Ingresá un enlace http o https válido.")
+});
+
 export const liveClassSchema = z.object({
   stageId: z.string().min(1),
   title: z.string().trim().min(2).max(160),

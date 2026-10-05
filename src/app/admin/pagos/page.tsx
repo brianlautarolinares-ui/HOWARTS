@@ -20,7 +20,7 @@ export default async function PaymentSettingsPage({
 
   return (
     <main className="mx-auto min-h-screen max-w-4xl px-4 py-10">
-      <nav className="flex gap-5 text-sm font-semibold text-brand">
+      <nav aria-label="Navegación de administración" className="flex gap-5 text-sm font-semibold text-brand">
         <Link href="/alumno">Volver al campus</Link>
         <Link href="/admin">Dashboard</Link>
         <Link href="/admin/cursos">Administrar cursos</Link>
@@ -42,7 +42,7 @@ export default async function PaymentSettingsPage({
         </p>
       ) : null}
 
-      <form action={savePaymentSettings} className="mt-8 space-y-6">
+      <form action={savePaymentSettings} aria-label="Datos para recibir pagos" className="mt-8 space-y-6">
         <div className="grid gap-5 sm:grid-cols-2">
           <label className="block text-sm font-medium">
             Banco, billetera o medio de pago

@@ -33,7 +33,7 @@ export default async function AdminCoursesPage({
 
   return (
     <main className="mx-auto min-h-screen max-w-6xl px-4 py-10">
-      <nav className="flex flex-wrap gap-5 text-sm font-semibold text-brand">
+      <nav aria-label="Navegación de administración" className="flex flex-wrap gap-5 text-sm font-semibold text-brand">
         <Link href="/alumno">Volver al campus</Link>
         <Link href="/admin">Dashboard</Link>
         <Link href="/admin/pagos">Datos de cobro</Link>

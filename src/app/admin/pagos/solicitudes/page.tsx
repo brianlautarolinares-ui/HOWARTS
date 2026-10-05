@@ -20,7 +20,7 @@ export default async function PendingPaymentsPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 py-10">
-      <nav className="flex flex-wrap gap-5 text-sm font-semibold text-brand">
+      <nav aria-label="Navegación de administración" className="flex flex-wrap gap-5 text-sm font-semibold text-brand">
         <Link href="/alumno">Volver al campus</Link>
         <Link href="/admin/cursos">Administrar cursos</Link>
         <Link href="/admin/pagos">Datos de cobro</Link>
@@ -48,7 +48,9 @@ export default async function PendingPaymentsPage() {
               </div>
               <ConfirmPaymentForm
                 userId={enrollment.user.id}
+                studentName={enrollment.user.name}
                 courseId={enrollment.course.id}
+                courseTitle={enrollment.course.title}
                 amountArs={enrollment.course.priceArs}
               />
             </li>

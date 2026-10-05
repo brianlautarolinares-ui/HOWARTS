@@ -160,8 +160,9 @@ model CourseStage {
 model LiveClass {
   id             String      @id @default(cuid())
   stageId        String
+  position       Int         @default(1)
   title          String      @db.VarChar(160)
-  scheduledAt    DateTime
+  scheduledAt    DateTime?
   meetingUrl     String?     @db.VarChar(500)
   recordingUrl   String?     @db.VarChar(500)
   developedTopic String?     @db.Text
@@ -175,6 +176,7 @@ model LiveClass {
   progress       ClassProgress[]
   quiz           ClassQuiz?
 
+  @@unique([stageId, position])
   @@index([stageId, scheduledAt])
 }
 

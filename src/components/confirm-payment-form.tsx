@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 
 type ConfirmPaymentFormProps = {
   userId: string;
+  studentName: string;
   courseId: string;
+  courseTitle: string;
   amountArs: number;
 };
 
-export function ConfirmPaymentForm({ userId, courseId, amountArs }: ConfirmPaymentFormProps) {
+export function ConfirmPaymentForm({ userId, studentName, courseId, courseTitle, amountArs }: ConfirmPaymentFormProps) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -48,7 +50,7 @@ export function ConfirmPaymentForm({ userId, courseId, amountArs }: ConfirmPayme
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+    <form onSubmit={handleSubmit} aria-label={`Confirmar pago de ${studentName} para ${courseTitle}`} className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
       <label className="text-sm font-medium">
         Medio recibido
         <select name="method" defaultValue="BANK_TRANSFER" className="mt-2 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-base">

@@ -49,8 +49,10 @@
 - [x] Permitir al ADMIN asociar grabaciones y crear preguntas con puntaje mínimo.
 - [x] Permitir al alumno pagado marcar clases completadas y rendir/reintentar evaluaciones.
 - [x] Probar grabación, progreso persistente, aprobación y reintento fallido con datos QA temporales.
-- [x] Pasan `npm test` (15), `npm run typecheck` y `npm run build`.
+- [x] Pasan `npm test` (30), `npm run typecheck` y `npm run build`.
 - [ ] Ejecutar auditoría WCAG AA formal y revisión con lector de pantalla.
+	- [x] Revisión estática de navegación y acciones administrativas; se añadieron nombres accesibles a las navegaciones, métricas y formularios de confirmación de pagos, se comprobó el foco visible por teclado y se vinculó la ayuda de contraseña del registro.
+	- [ ] Validar manualmente las pantallas ADMIN con teclado y lector de pantalla; el acceso requiere una sesión ADMIN.
 
 ## Regla de avance
 

@@ -59,8 +59,8 @@ export default function RegisterPage() {
         </div>
         <div>
           <label htmlFor="password" className="mb-1 block text-sm font-medium">Contraseña</label>
-          <input id="password" name="password" type="password" autoComplete="new-password" required minLength={10} className="w-full rounded-lg border border-slate-300 px-3 py-2" />
-          <p className="mt-1 text-xs text-slate-500">Mínimo 10 caracteres, mayúscula, minúscula y número.</p>
+          <input id="password" name="password" type="password" autoComplete="new-password" required minLength={10} aria-describedby="password-requirements" className="w-full rounded-lg border border-slate-300 px-3 py-2" />
+          <p id="password-requirements" className="mt-1 text-xs text-slate-500">Mínimo 10 caracteres, mayúscula, minúscula y número.</p>
         </div>
         {error ? <p role="alert" className="text-sm font-medium text-red-700">{error}</p> : null}
         <button disabled={loading} type="submit" className="w-full rounded-lg bg-brand px-4 py-3 font-semibold text-white disabled:opacity-50">

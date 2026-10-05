@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { courseManagementSchema, liveClassSchema, quizQuestionSchema } from "./course-content";
+import {
+  classCountSchema,
+  courseClassDraftSchema,
+  courseManagementSchema,
+  liveClassSchema,
+  preparedClassScheduleSchema,
+  quizQuestionSchema
+} from "./course-content";
 
 describe("courseManagementSchema", () => {
   it("parses a valid ARS course price", () => {
@@ -41,6 +48,41 @@ describe("liveClassSchema", () => {
 
     expect(liveClassSchema.safeParse(valid).success).toBe(true);
     expect(liveClassSchema.safeParse({ ...valid, meetingUrl: "javascript:alert(1)" }).success).toBe(false);
+  });
+});
+
+describe("courseClassDraftSchema", () => {
+  it("accepts class content without requiring a schedule", () => {
+    expect(courseClassDraftSchema.safeParse({
+      title: "Clase inicial",
+      developedTopic: "Introducción y materiales de estudio.",
+      authorCredit: "Equipo docente"
+    }).success).toBe(true);
+  });
+
+  it("limits the number of prepared classes", () => {
+    expect(classCountSchema.safeParse("1").success).toBe(true);
+    expect(classCountSchema.safeParse("30").success).toBe(true);
+    expect(classCountSchema.safeParse("31").success).toBe(false);
+    expect(classCountSchema.safeParse("1.5").success).toBe(false);
+  });
+});
+
+describe("preparedClassScheduleSchema", () => {
+  it("accepts a scheduled date and an optional web meeting link", () => {
+    expect(preparedClassScheduleSchema.safeParse({
+      classId: "class-1",
+      scheduledAt: "2026-10-20T18:30",
+      meetingUrl: "https://meet.example.com/class"
+    }).success).toBe(true);
+  });
+
+  it("rejects unsafe meeting URL schemes", () => {
+    expect(preparedClassScheduleSchema.safeParse({
+      classId: "class-1",
+      scheduledAt: "2026-10-20T18:30",
+      meetingUrl: "javascript:alert(1)"
+    }).success).toBe(false);
   });
 });
 

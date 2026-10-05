@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+	outline: 3px solid #6d4aff;
+	outline-offset: 3px;
+}
